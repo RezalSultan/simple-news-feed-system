@@ -1,0 +1,56 @@
+name: CI/CD Actions
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build-backend:
+    name: Build & Test Backend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api-nestjs
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.x"
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run tests NestJS
+        run: bun test
+
+      - name: Build NestJS
+        run: bun run build
+
+  build-frontend:
+    name: Build & Test Frontend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client-nextjs
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.x"
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run EsLint
+        run: bun run lint
+
+      - name: Build Next.js
+        run: bun run build
