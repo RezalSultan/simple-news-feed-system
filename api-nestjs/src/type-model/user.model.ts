@@ -12,8 +12,9 @@ export class User {
 export class AllInfoUser {
   id: bigint;
   username: string;
+  created_at?: string;
+  is_following?: boolean;
   posts: Post[];
   followers: Followers[];
   following: Following[];
-  created_at?: string;
 }

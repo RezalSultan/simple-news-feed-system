@@ -3,7 +3,6 @@ import { AppResponse } from 'src/type-model/app.model';
 import { UserService } from './user.service';
 import { Auth } from 'src/common/decorator/auth.decorator';
 import { AllInfoUser, User } from 'src/type-model/user.model';
-import { ParseBigIntPipe } from 'src/common/pipes/parse-bigint.pipe';
 
 @Controller('/api')
 export class UserController {
@@ -21,10 +20,39 @@ export class UserController {
     };
   }
 
+  @Get('/other-user/:userId')
+  async getAllInfoOtherUser(
+    @Auth() auth: User,
+    @Param('userId') userId: bigint,
+  ): Promise<AppResponse<AllInfoUser>> {
+    const result = await this.userService.allInfoOtherUser(auth, userId);
+
+    return {
+      statusCode: 200,
+      status: 'Ok',
+      message: 'Look all information this user successfully',
+      data: result,
+    };
+  }
+
+  @Get('/suggest-users')
+  async getFiveSuggestedUsers(
+    @Auth() auth: User,
+  ): Promise<AppResponse<User[]>> {
+    const result = await this.userService.fiveSuggestedUsers(auth);
+
+    return {
+      statusCode: 200,
+      status: 'Ok',
+      message: 'Get five suggested user successfully',
+      data: result,
+    };
+  }
+
   @Post('/follow/:userId')
   async followUser(
     @Auth() auth: User,
-    @Param('userId', ParseBigIntPipe) followUserId: bigint,
+    @Param('userId') followUserId: bigint,
   ): Promise<AppResponse<AllInfoUser>> {
     const result = await this.userService.followingUser(auth, followUserId);
 
@@ -38,7 +66,7 @@ export class UserController {
   @Delete('/follow/:userId')
   async unfollowUser(
     @Auth() auth: User,
-    @Param('userId', ParseBigIntPipe) unfollowUserId: bigint,
+    @Param('userId') unfollowUserId: bigint,
   ): Promise<AppResponse<AllInfoUser>> {
     const result = await this.userService.unfollowingUser(auth, unfollowUserId);
 

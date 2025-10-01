@@ -33,6 +33,9 @@ export class ErrorFilter implements ExceptionFilter {
         case 401:
           message = 'Unauthorized';
           break;
+        case 403:
+          message = 'Forbidden';
+          break;
         case 404:
           message = 'Not Found';
           break;

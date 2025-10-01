@@ -1,7 +1,6 @@
 import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { PgService } from 'src/common/db.service';
-import { ValidationService } from 'src/common/validation.service';
 import { UserRepository } from 'src/repository/user.repository';
 import { Logger } from 'winston';
 import { PostRepository } from 'src/repository/post.repository';
@@ -40,27 +39,65 @@ export class UserService {
     };
   }
 
+  async allInfoOtherUser(auth: User, userId: bigint): Promise<AllInfoUser> {
+    this.logger.info(`Get All Info Other User`);
+
+    if (auth.id === userId) {
+      throw new HttpException(
+        'Access to your own info is not allowed here',
+        403,
+      );
+    }
+
+    const user = await this.userRepo.findById(this.db, userId);
+    if (!user) {
+      throw new HttpException('Other user not found', 404);
+    }
+    const posts = await this.postRepo.findPostsByUserId(this.db, userId);
+    const followers = await this.followRepo.findFollowers(this.db, userId);
+    const following = await this.followRepo.findFollowing(this.db, userId);
+
+    const isFollowing = await this.followRepo.isFollowingThisUser(
+      this.db,
+      auth.id,
+      userId,
+    );
+
+    return {
+      id: userId,
+      username: user.username,
+      created_at: user.created_at,
+      is_following: isFollowing,
+      posts,
+      followers,
+      following,
+    };
+  }
+
+  async fiveSuggestedUsers(auth: User): Promise<User[]> {
+    this.logger.info(`Get Five Not Following User`);
+
+    const getSuggestUsers = await this.followRepo.getFiveNotFollowingUsers(
+      this.db,
+      auth.id,
+    );
+
+    return getSuggestUsers;
+  }
+
   async followingUser(auth: User, followUserId: bigint): Promise<string> {
     this.logger.info(`Following User`);
 
-    const user = await this.userRepo.findById(this.db, auth.id);
-    if (!user) {
-      throw new HttpException('User not found', 404);
+    if (auth.id === followUserId) {
+      throw new HttpException('You cannot follow yourself', 400);
     }
 
-    const followUser = await this.followRepo.followUser(
-      this.db,
-      auth.id,
-      followUserId,
-    );
-
-    const accountFollower = await this.userRepo.findById(
-      this.db,
-      followUser.follower_id,
-    );
+    const accountFollower = await this.userRepo.findById(this.db, followUserId);
     if (!accountFollower) {
-      throw new HttpException('User Follower not found', 404);
+      throw new HttpException('User follower not found', 404);
     }
+
+    await this.followRepo.followUser(this.db, auth.id, followUserId);
 
     return accountFollower.username;
   }
@@ -68,11 +105,11 @@ export class UserService {
   async unfollowingUser(auth: User, unfollowUserId: bigint): Promise<string> {
     this.logger.info(`Unfollow User`);
 
-    const user = await this.userRepo.findById(this.db, auth.id);
-    const unfollowUser = await this.userRepo.findById(this.db, auth.id);
-    if (!user) {
-      throw new HttpException('User not found', 404);
+    if (auth.id === unfollowUserId) {
+      throw new HttpException('You cannot unfollow yourself', 400);
     }
+
+    const unfollowUser = await this.userRepo.findById(this.db, unfollowUserId);
     if (!unfollowUser) {
       throw new HttpException('User follower not found', 404);
     }
