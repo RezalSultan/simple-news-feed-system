@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "public"."posts" ALTER COLUMN "created_at" SET DEFAULT CURRENT_TIMESTAMP,
+ALTER COLUMN "created_at" SET DATA TYPE TIMESTAMP(3);
+
+-- AlterTable
+ALTER TABLE "public"."users" ALTER COLUMN "created_at" SET DEFAULT CURRENT_TIMESTAMP,
+ALTER COLUMN "created_at" SET DATA TYPE TIMESTAMP(3);

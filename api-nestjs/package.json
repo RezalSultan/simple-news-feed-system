@@ -21,12 +21,19 @@
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
+    "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^10.0.0",
+    "@nestjs/jwt": "^11.0.0",
     "@nestjs/platform-express": "^10.0.0",
     "@prisma/client": "^6.16.2",
+    "@types/pg": "^8.15.5",
+    "bcrypt": "^6.0.0",
+    "nest-winston": "^1.10.2",
+    "pg": "^8.16.3",
     "prisma": "^6.16.2",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "zod": "^4.1.11"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
