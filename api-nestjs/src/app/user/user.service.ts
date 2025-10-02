@@ -39,8 +39,11 @@ export class UserService {
     };
   }
 
-  async allInfoOtherUser(auth: User, userId: bigint): Promise<AllInfoUser> {
+  async allInfoOtherUser(auth: User, username: string): Promise<AllInfoUser> {
     this.logger.info(`Get All Info Other User`);
+
+    const user = await this.userRepo.findByUsername(this.db, username);
+    const userId = user.id;
 
     if (auth.id === userId) {
       throw new HttpException(
@@ -49,7 +52,6 @@ export class UserService {
       );
     }
 
-    const user = await this.userRepo.findById(this.db, userId);
     if (!user) {
       throw new HttpException('Other user not found', 404);
     }
@@ -83,6 +85,17 @@ export class UserService {
     );
 
     return getSuggestUsers;
+  }
+
+  async allUsers(auth: User): Promise<User[]> {
+    this.logger.info(`Get All Not Following User`);
+
+    const getAllUsers = await this.followRepo.getAllNotFollowingUsers(
+      this.db,
+      auth.id,
+    );
+
+    return getAllUsers;
   }
 
   async followingUser(auth: User, followUserId: bigint): Promise<string> {

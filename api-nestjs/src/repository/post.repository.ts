@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PgService } from 'src/common/db.service';
-import { Post, PostWithUsername } from 'src/type-model/post.model';
+import {
+  Post,
+  PostResponse,
+  PostWithUsername,
+} from 'src/type-model/post.model';
 
 @Injectable()
 export class PostRepository {
@@ -11,12 +15,16 @@ export class PostRepository {
   }
 
   async findPostsByUserId(db: PgService, userId: bigint): Promise<Post[]> {
-    const sql = `SELECT id, content, created_at FROM posts WHERE user_id = $1`;
+    const sql = `SELECT id, content, created_at FROM posts WHERE user_id = $1 ORDER BY created_at DESC`;
     const result = await db.query(sql, [userId]);
     return result.rows ?? [];
   }
 
-  async addPost(db: PgService, userId: bigint, content: string): Promise<Post> {
+  async addPost(
+    db: PgService,
+    userId: bigint,
+    content: string,
+  ): Promise<PostResponse> {
     const sql = `INSERT INTO posts (user_id, content) VALUES ($1, $2) RETURNING *`;
     const result = await db.query(sql, [userId, content]);
     return result.rows[0];

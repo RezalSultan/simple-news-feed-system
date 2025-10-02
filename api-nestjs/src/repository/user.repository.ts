@@ -37,7 +37,7 @@ export class UserRepository {
 
   async updateTokenUser(
     db: PgService,
-    refresh_token: string,
+    refresh_token: string | null,
     id: bigint,
   ): Promise<User> {
     const sql = `
@@ -46,7 +46,7 @@ export class UserRepository {
       WHERE id = $2
       RETURNING id, username, refresh_token
     `;
-    const result = await db.query(sql, [refresh_token, id]);
+    const result = await db.query(sql, [refresh_token ?? null, id]);
     return result.rows[0];
   }
 }

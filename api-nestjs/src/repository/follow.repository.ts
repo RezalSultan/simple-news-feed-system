@@ -40,6 +40,19 @@ export class FollowRepository {
     return result.rows ?? [];
   }
 
+  async getAllNotFollowingUsers(
+    db: PgService,
+    userId: bigint,
+  ): Promise<User[]> {
+    const sql = `
+    SELECT id, username FROM users WHERE id != $1
+      AND id NOT IN (SELECT followee_id FROM follows WHERE follower_id = $1)
+    ORDER BY created_at DESC
+  `;
+    const result = await db.query(sql, [userId]);
+    return result.rows ?? [];
+  }
+
   async followUser(
     db: PgService,
     userId: bigint,

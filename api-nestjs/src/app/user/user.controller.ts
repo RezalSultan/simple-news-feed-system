@@ -20,12 +20,12 @@ export class UserController {
     };
   }
 
-  @Get('/other-user/:userId')
+  @Get('/other-user/:username')
   async getAllInfoOtherUser(
     @Auth() auth: User,
-    @Param('userId') userId: bigint,
+    @Param('username') username: string,
   ): Promise<AppResponse<AllInfoUser>> {
-    const result = await this.userService.allInfoOtherUser(auth, userId);
+    const result = await this.userService.allInfoOtherUser(auth, username);
 
     return {
       statusCode: 200,
@@ -45,6 +45,18 @@ export class UserController {
       statusCode: 200,
       status: 'Ok',
       message: 'Get five suggested user successfully',
+      data: result,
+    };
+  }
+
+  @Get('/all-users')
+  async getAllUsers(@Auth() auth: User): Promise<AppResponse<User[]>> {
+    const result = await this.userService.allUsers(auth);
+
+    return {
+      statusCode: 200,
+      status: 'Ok',
+      message: 'Get all user successfully',
       data: result,
     };
   }

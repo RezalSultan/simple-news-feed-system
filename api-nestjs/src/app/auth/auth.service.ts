@@ -13,6 +13,7 @@ import {
 import { Logger } from 'winston';
 import { AuthValidation } from './auth.validation';
 import { comparePassword, hashPassword } from 'src/utils/hash.util';
+import { User } from 'src/type-model/user.model';
 
 @Injectable()
 export class AuthService {
@@ -94,5 +95,11 @@ export class AuthService {
       id: createdUser.id,
       username: createdUser.username,
     };
+  }
+
+  async logoutAccount(auth: User): Promise<void> {
+    this.logger.info(`User Logout`);
+
+    await this.userRepo.updateTokenUser(this.db, null, auth.id);
   }
 }

@@ -20,7 +20,10 @@ export class PostRequest {
 }
 
 export class PostResponse {
+  id: bigint;
+  user_id: bigint;
   content: string;
+  created_at: string;
 }
 
 export class FeedResponse {

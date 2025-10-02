@@ -17,6 +17,8 @@ import { AuthMiddleware } from 'src/common/middleware/auth.middleware';
 import { UserRepository } from 'src/repository/user.repository';
 import { PostRepository } from 'src/repository/post.repository';
 import { FollowRepository } from 'src/repository/follow.repository';
+import { UserController } from 'src/app/user/user.controller';
+import { PostController } from 'src/app/post/post.controller';
 
 @Global()
 @Module({
@@ -62,10 +64,9 @@ export class CommonModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .exclude(
-        { path: '/api/login', method: RequestMethod.POST },
-        { path: '/api/register', method: RequestMethod.POST },
-      )
-      .forRoutes('/api/*');
+      .forRoutes(UserController, PostController, {
+        path: 'api/logout',
+        method: RequestMethod.DELETE,
+      });
   }
 }

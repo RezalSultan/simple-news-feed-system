@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AppResponse } from 'src/type-model/app.model';
 import {
@@ -7,6 +7,8 @@ import {
   RegisterRequest,
   RegisterResponse,
 } from 'src/type-model/auth.model';
+import { User } from 'src/type-model/user.model';
+import { Auth } from 'src/common/decorator/auth.decorator';
 
 @Controller('/api')
 export class AuthController {
@@ -19,7 +21,7 @@ export class AuthController {
     return {
       statusCode: 201,
       status: 'Created',
-      message: 'Login account successfully.',
+      message: 'Login successful. Great to see you again!',
       data: result,
     };
   }
@@ -33,8 +35,19 @@ export class AuthController {
     return {
       statusCode: 201,
       status: 'Created',
-      message: 'Register account successfully.',
+      message: 'Registration successful! You can now log in.',
       data: result,
+    };
+  }
+
+  @Delete('/logout')
+  async logout(@Auth() auth: User): Promise<AppResponse<void>> {
+    await this.authService.logoutAccount(auth);
+
+    return {
+      statusCode: 200,
+      status: 'OK',
+      message: 'Logout successful! You have been logged out.',
     };
   }
 }

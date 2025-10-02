@@ -40,9 +40,7 @@ export class PostService {
       postReq.content,
     );
 
-    return {
-      content: postAdded.content,
-    };
+    return postAdded;
   }
 
   async getFeed(
