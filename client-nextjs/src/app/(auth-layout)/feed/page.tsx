@@ -4,9 +4,8 @@ import SectionProfileSummary from "./_components/section-profile-summary";
 import SectionRecomendation from "./_components/section-recommendation";
 import { cookies } from "next/headers";
 import { AllInfoUser } from "@/type/user-type";
-import { getProfile } from "@/service/get-profile-service";
 import { ToastError } from "@/components/client-toaster";
-import { getSuggestUser } from "@/service/get-suggest-user-service";
+import { getProfile, getSuggestUser } from "@/service/user-service";
 
 const FeedPage = async () => {
   const token = (await cookies()).get("token")?.value;

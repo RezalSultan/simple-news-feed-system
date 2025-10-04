@@ -16,6 +16,12 @@ export class UserRepository {
     return result.rows[0] ?? null;
   }
 
+  async findByRefreshToken(db: PgService, token: string): Promise<User | null> {
+    const sql = `SELECT * FROM users WHERE refresh_token = $1 LIMIT 1`;
+    const result = await db.query(sql, [token]);
+    return result.rows[0] ?? null;
+  }
+
   async createUser(
     db: PgService,
     username: string,

@@ -4,10 +4,10 @@ import FeedCard from "@/components/cards/feed-card";
 import FeedCardSkeleton from "@/components/skeletons/feed-card-skeleton";
 import { Button } from "@/components/ui/button";
 import { useLoading } from "@/hooks/use-loading";
-import { getFeed } from "@/service/get-feed-service";
+import { getFeed } from "@/service/post-service";
 import { PostWithUsername } from "@/type/post-type";
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 const FeedContents = ({
@@ -19,69 +19,66 @@ const FeedContents = ({
 }) => {
   const { loading, startLoading, stopLoading } = useLoading();
   const [mounted, setMounted] = useState(false);
-  const [page, setPage] = useState(1);
-  const [limit] = useState(10);
   const [feeds, setFeeds] = useState<PostWithUsername[]>([]);
   const [hasMore, setHasMore] = useState(true);
+
   const observerRef = useRef<HTMLDivElement | null>(null);
-  const hasMoreRef = useRef(hasMore);
-  const pageRef = useRef(page);
+  const pageRef = useRef(1);
+  const limit = 10;
 
-  hasMoreRef.current = hasMore;
-  pageRef.current = page;
+  const fetchData = useCallback(
+    async (reset = false) => {
+      startLoading();
 
-  const fetchData = async () => {
-    if (!hasMoreRef.current) return;
+      const pageToFetch = reset ? 1 : pageRef.current;
+      const result = await getFeed(pageToFetch, limit, token);
 
-    startLoading();
-    const result = await getFeed(pageRef.current, limit, token);
+      if ("errors" in result) {
+        toast.error(result.errors?.message, { position: "top-right" });
+        return;
+      }
 
-    if ("errors" in result) {
-      toast.error(result.errors?.message, { position: "top-right" });
-      stopLoading();
-      return;
-    }
-
-    const updateFeeds = () => {
       setFeeds((prev) => {
-        const newFeeds = [...prev, ...(result.data?.posts ?? [])];
+        const newFeeds = reset
+          ? (result.data?.posts ?? [])
+          : [...prev, ...(result.data?.posts ?? [])];
         const unique = new Map(newFeeds.map((item) => [item.id, item]));
         return Array.from(unique.values());
       });
 
-      if ((result.data?.posts.length ?? 0) < limit) setHasMore(false);
-      setPage((prev) => prev + 1);
+      const pagination = result.meta?.pagination;
+      const totalPages = pagination?.totalPages ?? 1;
 
+      if (pageToFetch >= totalPages) {
+        setHasMore(false);
+      } else {
+        pageRef.current = pageToFetch + 1;
+      }
       stopLoading();
-    };
-
-    // simulasi loading handling infinite scroll saat tarik data
-    if (feeds.length === 0) {
-      updateFeeds();
-    } else {
-      setTimeout(updateFeeds, 1500);
-    }
-  };
+    },
+    [limit, token],
+  );
 
   useEffect(() => {
     setMounted(true);
-    fetchData();
-  }, []);
+    fetchData(true);
+  }, [fetchData]);
 
   useEffect(() => {
-    if (!observerRef.current) return;
+    if (!observerRef.current || !hasMore || loading) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
           fetchData();
         }
       },
-      { rootMargin: "100px" },
+      { rootMargin: "50px" },
     );
 
     observer.observe(observerRef.current);
     return () => observer.disconnect();
-  }, [page]);
+  }, [hasMore, loading, fetchData]);
 
   if (!mounted) {
     return (

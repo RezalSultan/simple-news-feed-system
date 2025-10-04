@@ -12,6 +12,7 @@ import {
 import { User } from 'src/type-model/user.model';
 import { Logger } from 'winston';
 import { PostValidation } from './post.validation';
+import { AuthUser } from 'src/type-model/auth.model';
 
 @Injectable()
 export class PostService {
@@ -22,7 +23,7 @@ export class PostService {
     private readonly postRepo: PostRepository,
   ) {}
 
-  async post(auth: User, req: PostRequest): Promise<PostResponse> {
+  async post(auth: AuthUser, req: PostRequest): Promise<PostResponse> {
     this.logger.info(`Add Post : ${req}`);
 
     const postReq = this.validationService.validate(
@@ -44,7 +45,7 @@ export class PostService {
   }
 
   async getFeed(
-    auth: User,
+    auth: AuthUser,
     page: number,
     limit: number,
   ): Promise<FeedWithPagination> {

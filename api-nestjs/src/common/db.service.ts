@@ -30,10 +30,6 @@ export class PgService extends Client implements OnModuleInit, OnModuleDestroy {
 
       const origQuery = this.query.bind(this);
       this.query = async (...args: any[]) => {
-        const [sql, params] = args;
-        this.logger.info(
-          `Executing Query: ${sql} ${params ? JSON.stringify(params) : ''}`,
-        );
         try {
           const res = await origQuery(...args);
           return res;

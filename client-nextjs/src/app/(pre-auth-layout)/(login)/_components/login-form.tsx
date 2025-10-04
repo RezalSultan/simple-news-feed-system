@@ -13,12 +13,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { login } from "@/service/login-service";
 import { useLoading } from "@/hooks/use-loading";
 import { loginFormSchema } from "@/validation-schema/auth-form-schema";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { LoginRequest } from "@/type/auth-type";
+import { login } from "@/service/auth-service";
 
 const LoginForm = () => {
   const { loading, startLoading, stopLoading } = useLoading();

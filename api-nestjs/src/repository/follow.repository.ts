@@ -64,7 +64,7 @@ export class FollowRepository {
       return result.rows[0];
     } catch (err: any) {
       if (err.code === '23505') {
-        throw new HttpException('You already follow this user', 400);
+        throw new HttpException('You already follow this user', 409);
       }
       throw new HttpException(err.message, 500);
     }

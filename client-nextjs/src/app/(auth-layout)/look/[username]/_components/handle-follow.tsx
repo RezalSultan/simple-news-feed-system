@@ -4,9 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Check, Plus } from "lucide-react";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { followUser } from "@/service/follow-user-service";
 import { toast } from "sonner";
-import { unfollowUser } from "@/service/unfollow-user-service";
+import { followUser, unfollowUser } from "@/service/follow-service";
 
 const HandleFollow = ({
   token,

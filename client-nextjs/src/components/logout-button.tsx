@@ -4,8 +4,8 @@ import React from "react";
 import { Button } from "./ui/button";
 import { useLoading } from "@/hooks/use-loading";
 import { useRouter } from "next/navigation";
-import { logout } from "@/service/logout-service";
 import { toast } from "sonner";
+import { logout } from "@/service/auth-service";
 
 const LogoutButton = ({ token }: { token?: string }) => {
   const { loading, startLoading, stopLoading } = useLoading();

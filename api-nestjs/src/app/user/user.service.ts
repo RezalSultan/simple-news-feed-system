@@ -6,6 +6,7 @@ import { Logger } from 'winston';
 import { PostRepository } from 'src/repository/post.repository';
 import { FollowRepository } from 'src/repository/follow.repository';
 import { AllInfoUser, User } from 'src/type-model/user.model';
+import { AuthUser } from 'src/type-model/auth.model';
 
 @Injectable()
 export class UserService {
@@ -17,7 +18,7 @@ export class UserService {
     private readonly followRepo: FollowRepository,
   ) {}
 
-  async allInfoUser(auth: User): Promise<AllInfoUser> {
+  async allInfoUser(auth: AuthUser): Promise<AllInfoUser> {
     this.logger.info(`Get All Info User`);
 
     const user = await this.userRepo.findById(this.db, auth.id);
@@ -39,11 +40,14 @@ export class UserService {
     };
   }
 
-  async allInfoOtherUser(auth: User, username: string): Promise<AllInfoUser> {
+  async allInfoOtherUser(
+    auth: AuthUser,
+    username: string,
+  ): Promise<AllInfoUser> {
     this.logger.info(`Get All Info Other User`);
 
     const user = await this.userRepo.findByUsername(this.db, username);
-    const userId = user.id;
+    const userId = user?.id;
 
     if (auth.id === userId) {
       throw new HttpException(
@@ -76,7 +80,7 @@ export class UserService {
     };
   }
 
-  async fiveSuggestedUsers(auth: User): Promise<User[]> {
+  async fiveSuggestedUsers(auth: AuthUser): Promise<User[]> {
     this.logger.info(`Get Five Not Following User`);
 
     const getSuggestUsers = await this.followRepo.getFiveNotFollowingUsers(
@@ -87,7 +91,7 @@ export class UserService {
     return getSuggestUsers;
   }
 
-  async allUsers(auth: User): Promise<User[]> {
+  async allUsers(auth: AuthUser): Promise<User[]> {
     this.logger.info(`Get All Not Following User`);
 
     const getAllUsers = await this.followRepo.getAllNotFollowingUsers(
@@ -96,46 +100,5 @@ export class UserService {
     );
 
     return getAllUsers;
-  }
-
-  async followingUser(auth: User, followUserId: bigint): Promise<string> {
-    this.logger.info(`Following User`);
-
-    if (auth.id === followUserId) {
-      throw new HttpException('You cannot follow yourself', 400);
-    }
-
-    const accountFollower = await this.userRepo.findById(this.db, followUserId);
-    if (!accountFollower) {
-      throw new HttpException('User follower not found', 404);
-    }
-
-    await this.followRepo.followUser(this.db, auth.id, followUserId);
-
-    return accountFollower.username;
-  }
-
-  async unfollowingUser(auth: User, unfollowUserId: bigint): Promise<string> {
-    this.logger.info(`Unfollow User`);
-
-    if (auth.id === unfollowUserId) {
-      throw new HttpException('You cannot unfollow yourself', 400);
-    }
-
-    const unfollowUser = await this.userRepo.findById(this.db, unfollowUserId);
-    if (!unfollowUser) {
-      throw new HttpException('User follower not found', 404);
-    }
-
-    const hasDeleted = await this.followRepo.unfollowUser(
-      this.db,
-      auth.id,
-      unfollowUserId,
-    );
-    if (!hasDeleted) {
-      throw new HttpException("You aren't following this user", 404);
-    }
-
-    return unfollowUser.username;
   }
 }

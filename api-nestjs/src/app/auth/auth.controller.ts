@@ -1,18 +1,26 @@
-import { Body, Controller, Delete, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  Post,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AppResponse } from 'src/type-model/app.model';
 import {
+  AccessTokenResponse,
+  AuthUser,
   LoginRequest,
   LoginResponse,
   RegisterRequest,
   RegisterResponse,
 } from 'src/type-model/auth.model';
-import { User } from 'src/type-model/user.model';
 import { Auth } from 'src/common/decorator/auth.decorator';
 
 @Controller('/api')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Post('/login')
   async login(@Body() req: LoginRequest): Promise<AppResponse<LoginResponse>> {
@@ -40,8 +48,35 @@ export class AuthController {
     };
   }
 
+  @Get('/generate-access-token')
+  async getAccessToken(
+    @Auth() auth: AuthUser,
+  ): Promise<AppResponse<AccessTokenResponse>> {
+    const result = await this.authService.generateAccessToken(auth);
+
+    return {
+      statusCode: 200,
+      status: 'Ok',
+      message: 'Generate access token successfully.',
+      data: result,
+    };
+  }
+
+  @Get('/verify-token')
+  async verifyToken(@Auth() auth: AuthUser): Promise<AppResponse<void>> {
+    if (!auth) {
+      throw new HttpException('Unauthorized', 401);
+    }
+
+    return {
+      statusCode: 200,
+      status: 'Ok',
+      message: 'Token is active.',
+    };
+  }
+
   @Delete('/logout')
-  async logout(@Auth() auth: User): Promise<AppResponse<void>> {
+  async logout(@Auth() auth: AuthUser): Promise<AppResponse<void>> {
     await this.authService.logoutAccount(auth);
 
     return {

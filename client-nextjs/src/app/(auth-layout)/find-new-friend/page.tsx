@@ -2,8 +2,8 @@ import React from "react";
 import { cookies } from "next/headers";
 import HeaderFind from "./_components/header";
 import GridCardUser from "./_components/grid-card-user";
-import { getAllUser } from "@/service/get-all-user-service";
 import { Metadata } from "next";
+import { getAllUser } from "@/service/user-service";
 
 export const metadata: Metadata = {
   title: "Find New Friends | News Feed System",

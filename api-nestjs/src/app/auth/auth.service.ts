@@ -5,6 +5,8 @@ import { PgService } from 'src/common/db.service';
 import { ValidationService } from 'src/common/validation.service';
 import { UserRepository } from 'src/repository/user.repository';
 import {
+  AccessTokenResponse,
+  AuthUser,
   LoginRequest,
   LoginResponse,
   RegisterRequest,
@@ -13,7 +15,6 @@ import {
 import { Logger } from 'winston';
 import { AuthValidation } from './auth.validation';
 import { comparePassword, hashPassword } from 'src/utils/hash.util';
-import { User } from 'src/type-model/user.model';
 
 @Injectable()
 export class AuthService {
@@ -47,16 +48,29 @@ export class AuthService {
       id: user.id,
       username: user.username,
     };
-    const tokenAuth = await this.jwtService.signAsync(payload);
+    const refreshToken = await this.jwtService.signAsync({
+      ...payload,
+      type: 'refresh',
+    });
+    const accessToken = await this.jwtService.signAsync(
+      {
+        ...payload,
+        type: 'access',
+      },
+      {
+        expiresIn: '15m',
+      },
+    );
 
     const loginUser = await this.userRepo.updateTokenUser(
       this.db,
-      tokenAuth,
+      refreshToken,
       user.id,
     );
 
     return {
-      token: loginUser.refresh_token,
+      token: accessToken,
+      refresh_token: loginUser.refresh_token,
     };
   }
 
@@ -97,7 +111,24 @@ export class AuthService {
     };
   }
 
-  async logoutAccount(auth: User): Promise<void> {
+  async generateAccessToken(auth: AuthUser): Promise<AccessTokenResponse> {
+    this.logger.info(`Generate New Access Token`);
+
+    const payload = {
+      id: auth.id,
+      username: auth.username,
+      type: 'access',
+    };
+    const accessToken = await this.jwtService.signAsync(payload, {
+      expiresIn: '15m',
+    });
+
+    return {
+      token: accessToken,
+    };
+  }
+
+  async logoutAccount(auth: AuthUser): Promise<void> {
     this.logger.info(`User Logout`);
 
     await this.userRepo.updateTokenUser(this.db, null, auth.id);

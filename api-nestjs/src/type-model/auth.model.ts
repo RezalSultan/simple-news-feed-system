@@ -16,4 +16,14 @@ export class LoginRequest {
 
 export class LoginResponse {
   token: string;
+  refresh_token: string;
+}
+
+export class AccessTokenResponse {
+  token: string;
+}
+
+export class AuthUser {
+  id: bigint;
+  username: string;
 }

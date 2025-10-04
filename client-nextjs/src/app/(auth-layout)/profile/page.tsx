@@ -3,11 +3,11 @@ import ProfileSection from "./_components/profile-section";
 import MyPostSection from "./_components/my-post-section";
 import { Separator } from "@/components/ui/separator";
 import { cookies } from "next/headers";
-import { getProfile } from "@/service/get-profile-service";
 import { AllInfoUser } from "@/type/user-type";
 import { ToastError } from "@/components/client-toaster";
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
+import { getProfile } from "@/service/user-service";
 
 export const metadata: Metadata = {
   title: "Profile | News Feed System",

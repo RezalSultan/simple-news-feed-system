@@ -12,20 +12,38 @@ export class AuthMiddleware implements NestMiddleware {
   ) {}
 
   async use(req: any, res: any, next: (error?: any) => void) {
-    const tokenAuth = req.headers['authorization'] as string;
-    if (!tokenAuth) throw new HttpException('No token provided', 401);
-    const token = tokenAuth?.split(' ')[1];
-    if (!token) throw new HttpException('Invalid token format', 401);
+    try {
+      const tokenAuth = req.headers['authorization'] as string;
+      if (!tokenAuth) throw new HttpException('No token provided', 401);
+      const token = tokenAuth?.split(' ')[1];
+      if (!token) throw new HttpException('Invalid token format', 401);
 
-    const payload = await this.jwt.verifyAsync(token);
-    const userId = payload.id;
+      const payload = await this.jwt.verifyAsync(token);
+      const userId = payload.id;
 
-    const user = await this.userRepo.findById(this.db, userId);
+      if (payload.type === 'refresh') {
+        const user = await this.userRepo.findById(this.db, userId);
+        if (user.refresh_token !== token) {
+          throw new HttpException('Unauthorized', 401);
+        }
+      }
 
-    if (user) {
-      req.user = user;
+      if (payload) {
+        req.user = {
+          id: payload.id,
+          username: payload.username,
+        };
+      }
+
+      next();
+    } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        throw new HttpException('Token expired', 401);
+      }
+      if (error.name === 'JsonWebTokenError') {
+        throw new HttpException('Invalid token', 401);
+      }
+      throw new HttpException('Unauthorized', 401);
     }
-
-    next();
   }
 }

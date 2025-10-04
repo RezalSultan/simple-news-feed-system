@@ -8,8 +8,8 @@ import Link from "next/link";
 import { Check, Plus } from "lucide-react";
 import { getInitials } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { followUser } from "@/service/follow-user-service";
 import { toast } from "sonner";
+import { followUser } from "@/service/follow-service";
 
 const RecomCard = ({
   token,

@@ -18,7 +18,7 @@ import { registerFormSchema } from "@/validation-schema/auth-form-schema";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { RegisterRequest } from "@/type/auth-type";
-import { register } from "@/service/register-service";
+import { register } from "@/service/auth-service";
 
 const RegisterForm = () => {
   const { loading, startLoading, stopLoading } = useLoading();

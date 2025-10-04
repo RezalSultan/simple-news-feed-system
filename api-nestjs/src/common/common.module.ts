@@ -13,12 +13,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { PgService } from './db.service';
 import { ValidationService } from './validation.service';
 import { ErrorFilter } from './error.filter';
-import { AuthMiddleware } from 'src/common/middleware/auth.middleware';
+import { UserController } from 'src/app/user/user.controller';
+import { PostController } from 'src/app/post/post.controller';
+import { AuthMiddleware } from './middleware/auth.middleware';
 import { UserRepository } from 'src/repository/user.repository';
 import { PostRepository } from 'src/repository/post.repository';
 import { FollowRepository } from 'src/repository/follow.repository';
-import { UserController } from 'src/app/user/user.controller';
-import { PostController } from 'src/app/post/post.controller';
+import { FollowController } from 'src/app/follow/follow.controller';
 
 @Global()
 @Module({
@@ -62,11 +63,22 @@ import { PostController } from 'src/app/post/post.controller';
 })
 export class CommonModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthMiddleware)
-      .forRoutes(UserController, PostController, {
+    consumer.apply(AuthMiddleware).forRoutes(
+      UserController,
+      PostController,
+      FollowController,
+      {
         path: 'api/logout',
         method: RequestMethod.DELETE,
-      });
+      },
+      {
+        path: 'api/generate-access-token',
+        method: RequestMethod.GET,
+      },
+      {
+        path: 'api/verify-token',
+        method: RequestMethod.GET,
+      },
+    );
   }
 }

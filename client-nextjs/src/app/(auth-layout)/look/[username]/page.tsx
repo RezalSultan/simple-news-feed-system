@@ -2,12 +2,12 @@ import React from "react";
 import ProfileSection from "./_components/profile-section";
 import { Separator } from "@/components/ui/separator";
 import { AllInfoUser } from "@/type/user-type";
-import { lookUser } from "@/service/look-user-service";
 import { cookies } from "next/headers";
 import PostSection from "./_components/post-section";
 import { ToastError } from "@/components/client-toaster";
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
+import { lookUser } from "@/service/user-service";
 
 export const metadata: Metadata = {
   title: "Detail Profile | News Feed System",

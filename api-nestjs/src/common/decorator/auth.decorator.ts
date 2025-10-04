@@ -12,7 +12,7 @@ export const Auth = createParamDecorator(
     if (user) {
       return user;
     } else {
-      throw new HttpException('Authentication failed', 401);
+      throw new HttpException('Unauthorized', 401);
     }
   },
 );

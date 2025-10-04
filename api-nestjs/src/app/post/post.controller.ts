@@ -17,6 +17,7 @@ import {
   PostRequest,
   PostResponse,
 } from 'src/type-model/post.model';
+import { AuthUser } from 'src/type-model/auth.model';
 
 @Controller('/api')
 export class PostController {
@@ -24,7 +25,7 @@ export class PostController {
 
   @Post('/posts')
   async posts(
-    @Auth() auth: User,
+    @Auth() auth: AuthUser,
     @Body() req: PostRequest,
   ): Promise<AppResponse<PostResponse>> {
     const result = await this.postService.post(auth, req);
@@ -32,14 +33,14 @@ export class PostController {
     return {
       statusCode: 201,
       status: 'Created',
-      message: 'Create Posts successfully',
+      message: 'Create posts successfully',
       data: result,
     };
   }
 
   @Get('/feed')
   async getFeed(
-    @Auth() auth: User,
+    @Auth() auth: AuthUser,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
   ): Promise<AppResponse<FeedResponse>> {
