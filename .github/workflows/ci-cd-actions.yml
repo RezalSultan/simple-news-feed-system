@@ -26,7 +26,7 @@ jobs:
         run: bun install
 
       - name: Run tests NestJS
-        run: bun test
+        run: bun run test
 
       - name: Build NestJS
         run: bun run build
