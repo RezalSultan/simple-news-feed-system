@@ -424,6 +424,393 @@ exit
 
 ---
 
+---
+
+#
+
+# API DOCUMENTATION
+
+### **POST - /api/login - login**
+
+**Request (Body)**
+
+```json
+{
+	"username": "johndoe",
+	"password": "password123"
+}
+```
+
+**Response**
+
+```json
+{
+	"statusCode": 201,
+	"status": "Created",
+	"message": "Login successful. Great to see you again!",
+	"data": {
+		"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQiLCJ1c2VybmFtZSI6Im1hbnRhcHBlIiwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc1OTY0OTU2OCwiZXhwIjoxNzU5NjUwNDY4fQ.o4y77d6kF02Xtb9UkDQcUpqsS-DS8Zx2yXwgu69bL9k",
+		"refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQiLCJ1c2VybmFtZSI6Im1hbnRhcHBlIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NTk2NDk1Njh9.5ACsqwy0djGN54BpOh3dkMC6DXZNQV2tHmRiTdNZOAE"
+	}
+}
+```
+
+---
+
+### **POST - /api/register - register**
+
+**Request (Body)**
+
+```json
+{
+	"username": "johndoe",
+	"password": "password123",
+	"confirm_password": "password123"
+}
+```
+
+**Response**
+
+```json
+{
+	"statusCode": 201,
+	"status": "Created",
+	"message": "Registration successful! You can now log in.",
+	"data": {
+		"id": 1,
+		"username": "johndoe"
+	}
+}
+```
+
+---
+
+### **GET - /api/generate-access-token - getAccessToken**
+
+**Headers**
+
+```
+Authorization: Bearer <refresh_token>
+```
+
+**Response**
+
+```json
+{
+	"statusCode": 200,
+	"status": "Ok",
+	"message": "Generate access token successfully.",
+	"data": {
+		"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQiLCJ1c2VybmFtZSI6Im1hbnRhcHBlIiwidHlwZSI6InJlZnJlc2giLCJpYXQiOjE3NTk2NDk1Njh9.5ACsqwy0djGN54BpOh3dkMC6DXZNQV2tHmRiTdNacgaw"
+	}
+}
+```
+
+---
+
+### **GET - /api/verify-token - verifyToken**
+
+**Headers**
+
+```
+Authorization: Bearer <access_token>
+```
+
+**Response**
+
+```json
+{
+	"statusCode": 200,
+	"status": "Ok",
+	"message": "Token is active."
+}
+```
+
+---
+
+### **DELETE - /api/logout - logout**
+
+**Headers**
+
+```
+Authorization: Bearer <access_token>
+```
+
+**Response**
+
+```json
+{
+	"statusCode": 200,
+	"status": "OK",
+	"message": "Logout successful! You have been logged out."
+}
+```
+
+---
+
+### **POST - /api/follow/:userId - followUser**
+
+**Request (URL Param)**  
+`/api/follow/2`
+
+**Headers**
+
+```
+Authorization: Bearer <access_token>
+```
+
+**Response**
+
+```json
+{
+	"statusCode": 201,
+	"status": "Created",
+	"message": "you are now following johndoe"
+}
+```
+
+---
+
+### **DELETE - /api/follow/:userId - unfollowUser**
+
+**Request (URL Param)**  
+`/api/follow/2`
+
+**Headers**
+
+```
+Authorization: Bearer <access_token>
+```
+
+**Response**
+
+```json
+{
+	"statusCode": 200,
+	"status": "Ok",
+	"message": "you unfollowed johndoe"
+}
+```
+
+---
+
+### **POST - /api/posts - posts**
+
+**Request (Body)**
+
+```json
+{
+	"content": "Hello world! This is my first post."
+}
+```
+
+**Headers**
+
+```
+Authorization: Bearer <access_token>
+```
+
+**Response**
+
+```json
+{
+	"statusCode": 201,
+	"status": "Created",
+	"message": "Create posts successfully",
+	"data": {
+		"id": 10,
+		"user_id": 1,
+		"content": "Hello world! This is my first post.",
+		"created_at": "2025-10-05T10:00:00Z"
+	}
+}
+```
+
+---
+
+### **GET - /api/feed - getFeed**
+
+**Query**
+
+```
+/api/feed?page=1&limit=2
+```
+
+**Headers**
+
+```
+Authorization: Bearer <access_token>
+```
+
+**Response**
+
+```json
+{
+	"statusCode": 200,
+	"status": "Ok",
+	"message": "Get feed successfully",
+	"data": {
+		"posts": [
+			{
+				"id": 10,
+				"user_id": 1,
+				"username": "johndoe",
+				"content": "Hello world! This is my first post.",
+				"created_at": "2025-10-05T10:00:00Z"
+			},
+			{
+				"id": 11,
+				"user_id": 2,
+				"username": "janedoe",
+				"content": "Welcome to the app!",
+				"created_at": "2025-10-05T11:00:00Z"
+			}
+		]
+	},
+	"meta": {
+		"pagination": {
+			"page": 1,
+			"limit": 2,
+			"totalItems": 5,
+			"totalPages": 3
+		}
+	}
+}
+```
+
+---
+
+### **GET - /api/data-user - getAllInfoUser**
+
+**Headers**
+
+```
+Authorization: Bearer <access_token>
+```
+
+**Response**
+
+```json
+{
+	"statusCode": 200,
+	"status": "Ok",
+	"message": "Get all information user successfully",
+	"data": {
+		"id": 1,
+		"username": "johndoe",
+		"created_at": "2025-01-01T08:00:00Z",
+		"is_following": false,
+		"posts": [
+			{
+				"id": 10,
+				"content": "Hello world!",
+				"created_at": "2025-10-05T10:00:00Z"
+			}
+		],
+		"followers": [{ "username": "janedoe" }],
+		"following": [{ "username": "alex" }]
+	}
+}
+```
+
+---
+
+### **GET - /api/other-user/:username - getAllInfoOtherUser**
+
+**Request (URL Param)**  
+`/api/other-user/janedoe`
+
+**Headers**
+
+```
+Authorization: Bearer <access_token>
+```
+
+**Response**
+
+```json
+{
+	"statusCode": 200,
+	"status": "Ok",
+	"message": "Look all information this user successfully",
+	"data": {
+		"id": 2,
+		"username": "janedoe",
+		"created_at": "2025-01-02T08:00:00Z",
+		"is_following": true,
+		"posts": [
+			{
+				"id": 12,
+				"content": "My coffee this morning ☕",
+				"created_at": "2025-10-05T07:00:00Z"
+			}
+		],
+		"followers": [{ "username": "johndoe" }],
+		"following": []
+	}
+}
+```
+
+---
+
+### **GET - /api/suggest-users - getFiveSuggestedUsers**
+
+**Headers**
+
+```
+Authorization: Bearer <access_token>
+```
+
+**Response**
+
+```json
+{
+	"statusCode": 200,
+	"status": "Ok",
+	"message": "Get five suggested user successfully",
+	"data": [
+		{ "id": 3, "username": "alex" },
+		{ "id": 4, "username": "maria" },
+		{ "id": 5, "username": "david" },
+		{ "id": 6, "username": "chris" },
+		{ "id": 7, "username": "linda" }
+	]
+}
+```
+
+---
+
+### **GET - /api/all-users - getAllUsers**
+
+**Headers**
+
+```
+Authorization: Bearer <access_token>
+```
+
+**Response**
+
+```json
+{
+	"statusCode": 200,
+	"status": "Ok",
+	"message": "Get all user successfully",
+	"data": [
+		{ "id": 1, "username": "johndoe" },
+		{ "id": 2, "username": "janedoe" },
+		{ "id": 3, "username": "alex" }
+	]
+}
+```
+
+---
+
+📌 **Notes**
+
+-   All authenticated routes require the `Authorization: Bearer <token>` header.
+-   All responses follow the `AppResponse` structure.
+-   Example usernames use `johndoe` and `janedoe` for demonstration.
+
 ### 👨‍💻 Author
 
 **Muhammad Rezal Sultan**  
