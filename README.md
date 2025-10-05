@@ -811,6 +811,98 @@ Authorization: Bearer <access_token>
 -   All responses follow the `AppResponse` structure.
 -   Example usernames use `johndoe` and `janedoe` for demonstration.
 
+---
+
+---
+
+#
+
+# UI DOCUMENTATION
+
+Dokumentasi ini berisi tampilan antarmuka (UI) dari **Simple News Feed System**.
+
+---
+
+## 📱 Login Page
+
+### 💻 Tampilan Desktop
+
+![Login Page](./ui-image/login%20page.jpeg)
+
+### 📱 Tampilan Mobile
+
+![Login Page Mobile](./ui-image/login%20page%20mobile.png)
+
+---
+
+## 🧍 Register Page
+
+![Register Page](./ui-image/register%20page.jpeg)
+
+---
+
+## 🏠 Feed Page
+
+### 💻 Tampilan Desktop
+
+![Feed Page](./ui-image/feed%20page.jpeg)
+
+### 📱 Tampilan Mobile
+
+![Feed Page Mobile](./ui-image/feed%20page%20mobile.png)
+
+---
+
+## ✍️ Post Page
+
+### 💻 Tampilan Desktop
+
+![Post Page](./ui-image/post%20page.jpeg)
+
+### 📱 Tampilan Mobile
+
+![Post Page Mobile](./ui-image/post%20page%20mobile.png)
+
+---
+
+## 👤 Profile Page
+
+### 💻 Tampilan Desktop
+
+![Profile Page](./ui-image/profile%20page.jpeg)
+
+### 📱 Tampilan Mobile
+
+![Profile Page Mobile](./ui-image/profile%20page%20mobile.png)
+
+---
+
+## 🔍 Find New Friend Page
+
+![Find New Friend Page](./ui-image/find%20new%20friend%20page.jpeg)
+
+---
+
+## 👁️ Look Profile User Page
+
+![Look Profile User Page](./ui-image/look%20profile%20user%20page.jpeg)
+
+---
+
+## 🧩 Tentang
+
+**Simple News Feed System** adalah proyek berbasis web yang memiliki fitur:
+
+-   Registrasi dan login pengguna
+-   Membuat, menampilkan, dan menghapus postingan
+-   Mengikuti (follow) dan berhenti mengikuti (unfollow) pengguna lain
+-   Melihat feed postingan dari pengguna yang diikuti
+-   Desain responsif untuk desktop, tablet & mobile
+
+---
+
+---
+
 ### 👨‍💻 Author
 
 **Muhammad Rezal Sultan**  
