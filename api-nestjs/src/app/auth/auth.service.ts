@@ -48,10 +48,13 @@ export class AuthService {
       id: user.id,
       username: user.username,
     };
-    const refreshToken = await this.jwtService.signAsync({
-      ...payload,
-      type: 'refresh',
-    });
+    const refreshToken = await this.jwtService.signAsync(
+      {
+        ...payload,
+        type: 'refresh',
+      },
+      { secret: process.env.JWT_REFRESH_SECRET },
+    );
     const accessToken = await this.jwtService.signAsync(
       {
         ...payload,

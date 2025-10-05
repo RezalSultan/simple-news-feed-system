@@ -18,7 +18,17 @@ export class AuthMiddleware implements NestMiddleware {
       const token = tokenAuth?.split(' ')[1];
       if (!token) throw new HttpException('Invalid token format', 401);
 
-      const payload = await this.jwt.verifyAsync(token);
+      let payload: any;
+
+      try {
+        payload = await this.jwt.verifyAsync(token, {
+          secret: process.env.JWT_ACCESS_SECRET,
+        });
+      } catch (err) {
+        payload = await this.jwt.verifyAsync(token, {
+          secret: process.env.JWT_REFRESH_SECRET,
+        });
+      }
       const userId = payload.id;
 
       if (payload.type === 'refresh') {
