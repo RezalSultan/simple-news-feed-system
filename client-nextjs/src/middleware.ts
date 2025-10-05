@@ -31,7 +31,7 @@ export async function middleware(request: NextRequest) {
 
   if (accessToken) {
     try {
-      await verifyToken(accessToken);
+      const test = await verifyToken(accessToken);
 
       return NextResponse.next();
     } catch (err: unknown) {
@@ -47,10 +47,7 @@ export async function middleware(request: NextRequest) {
           const payload = response.data;
 
           const res = NextResponse.next();
-          res.cookies.set("token", payload.data.token, {
-            httpOnly: true,
-            sameSite: "lax",
-          });
+          res.cookies.set("token", payload.data.token);
           return res;
         } catch (refreshErr) {
           return redirectToLogin(request);

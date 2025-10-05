@@ -7,16 +7,13 @@ export async function getProfile(
   token?: string,
 ): Promise<AppResponse<AllInfoUser>> {
   try {
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/data-user`,
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+    const response = await axios.get(`${process.env.API_URL}/data-user`, {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-    );
+    });
     const payload = response.data;
 
     return payload;
@@ -31,7 +28,7 @@ export async function lookUser(
 ): Promise<AppResponse<AllInfoUser>> {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/other-user/${username}`,
+      `${process.env.API_URL}/other-user/${username}`,
       {
         headers: {
           Accept: "application/json",
@@ -52,16 +49,13 @@ export async function getSuggestUser(
   token?: string,
 ): Promise<AppResponse<User[]>> {
   try {
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/suggest-users`,
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+    const response = await axios.get(`${process.env.API_URL}/suggest-users`, {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-    );
+    });
     const payload = response.data;
 
     return payload;
@@ -72,16 +66,13 @@ export async function getSuggestUser(
 
 export async function getAllUser(token?: string): Promise<AppResponse<User[]>> {
   try {
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/all-users`,
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+    const response = await axios.get(`${process.env.API_URL}/all-users`, {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-    );
+    });
     const payload = response.data;
 
     return payload;

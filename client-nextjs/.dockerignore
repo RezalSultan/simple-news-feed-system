@@ -1,0 +1,24 @@
+# Node & Bun dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+pnpm-lock.yaml
+package-lock.json
+next-env.d.ts
+
+# Build output
+.next
+out
+dist
+
+# Git & VCS
+.git
+.gitignore
+.dockerignore
+
+# Editor & OS junk
+.vscode
+.idea
+*.swp
+.DS_Store
+Thumbs.db

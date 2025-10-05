@@ -1,0 +1,61 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: always
+    container_name: postgres17
+    env_file:
+      - ./api-nestjs/.env
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: simple_news_feed_system
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - feed-system-network
+
+  api-nestjs-dev:
+    build:
+      context: ./api-nestjs
+      dockerfile: Dockerfile
+    image: api-nestjs:dev
+    container_name: api-nestjs-dev
+    ports:
+      - "3030:3030"
+    volumes: # hot reload nestjs dari lokal dengan folder di docker ada tambahan di file /api-nestjs/tsconfig.json key "watchOptions"
+      - ./api-nestjs:/app
+    env_file:
+      - ./api-nestjs/.env
+    depends_on:
+      - postgres
+    networks:
+      - feed-system-network
+
+  client-nextjs-dev:
+    build:
+      context: ./client-nextjs
+      dockerfile: Dockerfile
+    image: client-nextjs:dev
+    container_name: client-nextjs-dev
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./client-nextjs/.env
+    volumes:
+      - ./client-nextjs:/app # folder lokal : folder di container
+      - /app/node_modules
+    environment: # hot reload nextjs dari lokal dengan folder di docker
+      - WDS_SOCKET_HOST=127.0.0.1
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    networks:
+      - feed-system-network
+
+volumes:
+  pgdata:
+
+networks:
+  feed-system-network:
+    driver: bridge
